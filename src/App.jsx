@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { MessageSquare, Briefcase, Coffee, Send, KeyRound, Activity, TrendingUp, Target, Zap } from 'lucide-react'
+import { MessageSquare, Briefcase, Coffee, Send, KeyRound, Activity, TrendingUp, Target, Zap, ChevronDown, ChevronUp } from 'lucide-react'
 import { initGemini, generateResponse } from './gemini'
 
 function App() {
@@ -10,6 +10,7 @@ function App() {
   const [messages, setMessages] = useState([])
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [showMobileInsights, setShowMobileInsights] = useState(false)
   const messagesEndRef = useRef(null)
 
   useEffect(() => {
@@ -44,6 +45,8 @@ function App() {
       const response = await generateResponse(messages, userMsg.text, mode);
       const aiMsg = { role: 'model', ...response };
       setMessages(prev => [...prev, aiMsg]);
+      // Auto collapse mobile insights on new interaction
+      setShowMobileInsights(false);
     } catch (error) {
       setMessages(prev => [...prev, { role: 'model', raw: `Error: ${error.message}` }]);
     } finally {
@@ -57,15 +60,15 @@ function App() {
         <KeyRound size={48} color="var(--primary-color)" style={{ marginBottom: '24px' }} />
         <h1 style={{ margin: '0 0 12px 0', fontSize: '2rem', color: 'var(--text-dark)' }}>AI Language Trainer</h1>
         <p style={{ color: 'var(--text-light)', marginBottom: '32px', fontSize: '1.1rem' }}>Enter your Gemini API Key to secure your session</p>
-        <div style={{ display: 'flex', gap: '12px' }}>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
           <input 
             type="password" 
             value={apiKey} 
             onChange={(e) => setApiKey(e.target.value)}
             placeholder="AIzaSy..." 
-            style={{ padding: '16px 20px', borderRadius: '12px', border: '1px solid var(--border-color)', outline: 'none', width: '320px', fontSize: '1rem', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.02)' }}
+            style={{ padding: '16px 20px', borderRadius: '12px', border: '1px solid var(--border-color)', outline: 'none', width: '100%', maxWidth: '320px', fontSize: '1rem', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.02)' }}
           />
-          <button onClick={handleSaveKey} style={{ padding: '0 28px', borderRadius: '12px', background: 'var(--primary-color)', color: 'white', border: 'none', cursor: 'pointer', fontWeight: '600', fontSize: '1rem', transition: 'background 0.2s', boxShadow: '0 4px 6px rgba(59, 130, 246, 0.2)' }}>Explore</button>
+          <button onClick={handleSaveKey} style={{ padding: '16px 28px', borderRadius: '12px', background: 'var(--primary-color)', color: 'white', border: 'none', cursor: 'pointer', fontWeight: '600', fontSize: '1rem', transition: 'background 0.2s', boxShadow: '0 4px 6px rgba(59, 130, 246, 0.2)' }}>Explore</button>
         </div>
       </div>
     )
@@ -76,7 +79,7 @@ function App() {
       <div className="mode-selection">
         <h1 style={{ fontSize: '2.5rem', margin: '0 0 16px 0', color: 'var(--text-dark)' }}>Choose Your Practice Arena</h1>
         <p style={{ color: 'var(--text-light)', marginBottom: '48px', fontSize: '1.1rem' }}>Select a specialized scenario to dynamically test your communication skills.</p>
-        <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', flexWrap: 'wrap', width: '100%' }}>
           <button onClick={() => startMode('Job Interview')} className="mode-card">
             <div style={{ padding: '16px', background: '#eff6ff', borderRadius: '16px' }}><Briefcase size={40} color="var(--primary-color)" /></div>
             <h2>Job Interview</h2>
@@ -97,6 +100,38 @@ function App() {
 
   const modelMessages = messages.filter(m => m.role === 'model');
   const latestModelMsg = modelMessages.length > 0 ? modelMessages[modelMessages.length - 1] : null;
+
+  const renderInsights = () => (
+    <>
+      <div className="insight-card style">
+        <div className="insight-label"><MessageSquare size={16} /> Communication Style</div>
+        <div className="insight-value">
+          {latestModelMsg?.insight || 'Waiting for input...'}
+        </div>
+      </div>
+
+      <div className="insight-card strengths">
+        <div className="insight-label"><TrendingUp size={16} /> Strengths</div>
+        <div className="insight-value">
+          {latestModelMsg?.strengths || '-'}
+        </div>
+      </div>
+
+      <div className="insight-card areas">
+        <div className="insight-label"><Target size={16} /> Areas to Improve</div>
+        <div className="insight-value">
+          {latestModelMsg?.areasToImprove || '-'}
+        </div>
+      </div>
+
+      <div className="insight-card upgrade">
+        <div className="insight-label"><Zap size={16} /> Suggested Upgrade</div>
+        <div className="insight-value">
+          {latestModelMsg?.upgrade || '-'}
+        </div>
+      </div>
+    </>
+  );
 
   return (
     <div className="layout-wrapper">
@@ -176,6 +211,27 @@ function App() {
               </div>
             </div>
           )}
+          
+          {/* Mobile Insights Panel */}
+          {latestModelMsg && (
+             <div className="mobile-insights-container">
+               <button 
+                 className="mobile-insights-toggle"
+                 onClick={() => setShowMobileInsights(!showMobileInsights)}
+               >
+                 <Activity size={18} />
+                 {showMobileInsights ? 'Hide Session Insights' : 'Show Session Insights'}
+                 {showMobileInsights ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+               </button>
+               
+               {showMobileInsights && (
+                 <div className="mobile-insights-content">
+                   {renderInsights()}
+                 </div>
+               )}
+             </div>
+          )}
+          
           <div ref={messagesEndRef} />
         </div>
 
@@ -206,34 +262,7 @@ function App() {
       {/* Right Side Panel (Desktop Only) */}
       <div className="right-panel">
         <h3 className="panel-title"><Activity size={24} color="var(--primary-color)"/> Session Insights</h3>
-        
-        <div className="insight-card style">
-          <div className="insight-label"><MessageSquare size={16} /> Communication Style</div>
-          <div className="insight-value">
-            {latestModelMsg?.insight || 'Waiting for input...'}
-          </div>
-        </div>
-
-        <div className="insight-card strengths">
-          <div className="insight-label"><TrendingUp size={16} /> Strengths</div>
-          <div className="insight-value">
-            {latestModelMsg?.strengths || '-'}
-          </div>
-        </div>
-
-        <div className="insight-card areas">
-          <div className="insight-label"><Target size={16} /> Areas to Improve</div>
-          <div className="insight-value">
-            {latestModelMsg?.areasToImprove || '-'}
-          </div>
-        </div>
-
-        <div className="insight-card upgrade">
-          <div className="insight-label"><Zap size={16} /> Suggested Upgrade</div>
-          <div className="insight-value">
-            {latestModelMsg?.upgrade || '-'}
-          </div>
-        </div>
+        {renderInsights()}
       </div>
     </div>
   )

@@ -1,13 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --primary-color: #3b82f6;      /* Modern blue */
+  --primary-color: #3b82f6;      
   --primary-hover: #2563eb;
-  --bg-color: #f8fafc;           /* Light gray-blue background */
+  --bg-color: #f8fafc;           
   --card-bg: #ffffff;
   --border-color: #e2e8f0;
-  --text-dark: #1e293b;          /* Slate 800 */
-  --text-light: #64748b;         /* Slate 500 */
+  --text-dark: #1e293b;          
+  --text-light: #64748b;         
   
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -30,6 +30,8 @@ body, html {
 
 * {
   box-sizing: border-box;
+  overflow-wrap: break-word; /* Added for overflow fix */
+  word-wrap: break-word; /* Added for overflow fix */
 }
 
 /* Home / Setup Screens */
@@ -139,6 +141,7 @@ header h2 {
   flex: 1;
   padding: 24px;
   overflow-y: auto;
+  overflow-x: hidden;
   background: #fdfdfd;
   display: flex;
   flex-direction: column;
@@ -257,6 +260,7 @@ header h2 {
   transition: all 0.2s ease;
   box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
   font-family: inherit;
+  width: 100%;
 }
 
 .input-area input:focus {
@@ -276,7 +280,8 @@ header h2 {
   align-items: center;
   justify-content: center;
   width: 56px;
-  height: 56px;
+  height: 56px; /* Fixed height instead of padding */
+  flex-shrink: 0;
   transition: all 0.2s ease;
   box-shadow: var(--shadow-md);
 }
@@ -306,12 +311,6 @@ header h2 {
   flex-direction: column;
   gap: 20px;
   overflow-y: auto;
-}
-
-@media (max-width: 1024px) {
-  .right-panel {
-    display: none;
-  }
 }
 
 .panel-title {
@@ -392,4 +391,136 @@ header h2 {
 @keyframes typing {
   0%, 80%, 100% { transform: scale(0); }
   40% { transform: scale(1); }
+}
+
+/* Mobile Insights Styling */
+.mobile-insights-container {
+  display: none;
+}
+
+@media (min-width: 1025px) {
+  .right-panel {
+    display: flex;
+  }
+}
+
+/* Mobile specific changes */
+@media (max-width: 1024px) {
+  .layout-wrapper {
+    padding: 0; 
+    gap: 0;
+  }
+  
+  .chat-main {
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    height: 100vh;
+  }
+  
+  header {
+    padding: 12px 16px;
+  }
+
+  header h2 {
+    font-size: 1.1rem;
+  }
+
+  .top-summary-bar {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+  
+  .chat-messages {
+    padding: 16px;
+    gap: 20px;
+  }
+  
+  .message-wrapper {
+    max-width: 90%; 
+  }
+  
+  .message-user, .message-ai {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+  }
+
+  .ai-section {
+    padding: 12px 16px;
+  }
+  
+  .ai-section p, .insight-value {
+    font-size: 0.9rem;
+  }
+  
+  .next-question p {
+    font-size: 1rem;
+  }
+  
+  .input-area {
+    padding: 12px 16px;
+  }
+  
+  .input-area input {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+  }
+  
+  .btn-send {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .right-panel {
+    display: none;
+  }
+
+  .mobile-insights-container {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .mobile-insights-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--bg-color);
+    color: var(--text-dark);
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background 0.2s ease;
+  }
+
+  .mobile-insights-toggle:active {
+    background: #e2e8f0;
+  }
+
+  .mobile-insights-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-color);
+  }
+  
+  .setup-container, .mode-selection {
+    padding: 20px;
+  }
+  
+  .mode-card {
+    min-width: 100%;
+    padding: 20px;
+  }
 }
