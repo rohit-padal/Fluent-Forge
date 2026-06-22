@@ -1,8 +1,8 @@
-# AI Language Trainer
+# AI Language Trainer (Fluent-Forge)
 
 ## 📌 Project Overview
 
-AI Language Trainer is a structured web-based learning system designed to help users improve their language skills through guided conversation.
+Fluent-Forge is a structured web-based learning system designed to help users improve their language skills through guided conversation.
 
 Unlike generic chatbots, this application acts as an **intelligent language coach** that continuously evaluates, corrects, and enhances user communication in real time.
 
@@ -158,15 +158,6 @@ After every user message, AI must respond in this structure:
 
 ---
 
-## 🛠️ Future Enhancements (Optional)
-
-* Voice input & speaking evaluation
-* Real-time pronunciation feedback
-* AI-generated learning reports
-* Gamification (points, levels)
-
----
-
 ## 💡 Summary
 
-AI Language Trainer is not just a chatbot — it is a **structured, adaptive learning system** focused on real-world communication improvement through guided conversation and instant feedback.
+Fluent-Forge is not just a chatbot — it is a **structured, adaptive learning system** focused on real-world communication improvement through guided conversation and instant feedback.
